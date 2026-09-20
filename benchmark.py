@@ -2,15 +2,17 @@ import subprocess
 import time
 import re
 import json
+import os
 
 def run_comprehensive_benchmark():
-    print("🚀 INITIALIZING MULTI-MODEL PERFORMANCE STRESS-TEST ON M2 SILICON...")
+    print("🚀 INITIALIZING REAL-TIME MULTI-MODEL PERFORMANCE STRESS-TEST ON M2 SILICON...")
     print("="*75)
     
+    # Path routing to locate your compiled engine folder smoothly
     engine_path = "../llama.cpp/build/bin/llama-cli"
-    prompt = "Explain quantum physics in one sentence."
+    prompt = "Explain quantum physics in one short sentence."
     
-    # Matching the exact case layout downloaded to your system folder
+    # Direct matching of files in your active folder path
     models_to_test = {
         "1-Billion (Llama-3.2)": "Llama-3.2-1B-Instruct-Q4_K_M.gguf",
         "3-Billion (Llama-3.2)": "Llama-3.2-3B-Instruct-Q4_K_M.gguf",
@@ -19,15 +21,20 @@ def run_comprehensive_benchmark():
     
     performance_matrix = {}
     
-    for name, path in models_to_test.items():
+    for name, filename in models_to_test.items():
         print(f"⚡ Testing Scaling Ingestion Threshold: {name}...")
         
+        if not os.path.exists(filename):
+            print(f"   ❌ Error: {filename} not found in this folder. Skipping...\n")
+            continue
+            
         cmd = [
-            engine_path, "-m", path, "-p", prompt, "-n", "64",
+            engine_path, "-m", filename, "-p", prompt, "-n", "32",
             "-no-cnv", "-st", "--temp", "0.0"
         ]
         
         start_time = time.time()
+        # Capturing stdout AND stderr together fixes the regex data gap
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         stdout, stderr = process.communicate()
         end_time = time.time()
@@ -35,6 +42,7 @@ def run_comprehensive_benchmark():
         combined_output = stdout + stderr
         generation_speed = 0.0
         
+        # Comprehensive search for generation metrics inside the log streams
         match = re.search(r"Generation:\s+([\d.]+)\s+t/s", combined_output)
         if match:
             generation_speed = float(match.group(1))
@@ -54,7 +62,7 @@ def run_comprehensive_benchmark():
         json.dump(final_report, f, indent=4)
         
     print("="*75)
-    print("✅ COMPREHENSIVE TESTING MATRIX COMPLETE! Data dumped to benchmark_report.json")
+    print("✅ MATRIX ANALYSIS MANIFEST EXPORTED COMPLETE!")
     print("="*75)
 
 if __name__ == "__main__":
