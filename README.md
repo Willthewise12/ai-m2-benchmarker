@@ -1,2 +1,3 @@
-# Apple Silicon AI Optimization Suite
-Metrics and benchmarks for Apple Silicon ARM64 acceleration using Metal Performance Shaders (MPS) and Q4_K_M quantization layouts.
+# Apple Silicon AI Optimization & Autonomous Systems Suite
+
+A production-grade engineering workbench designed to evaluate edge-compute acceleration metrics and simulate low-latency, autonomous threat-vector tracking loops. Built from raw source configurations to operate completely offline.
